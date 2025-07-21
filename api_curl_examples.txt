@@ -1,0 +1,45 @@
+# API Workshop: Example curl commands for all endpoints
+
+# 1. Welcome endpoint (GET)
+curl -X GET http://127.0.0.1:5000/
+
+# 2. Swagger documentation (GET)
+curl -X GET http://127.0.0.1:5000/hidden/swagger/
+
+# 3. Hidden admin endpoint to add a user (POST)
+curl -X POST http://127.0.0.1:5000/admin/add_user \
+  -H "Content-Type: application/json" \
+  -H "X-Admin-Password: workshop_admin_pass" \
+  -d '{"email": "user@mail.com"}'
+
+# 4. Get JWT token using API key (POST)
+curl -X POST http://127.0.0.1:5000/api/auth/token \
+  -H "Content-Type: application/json" \
+  -d '{"api_key": "<API_KEY_FROM_ADMIN_ENDPOINT>"}'
+
+# 5. Task 1: Get task ID and next endpoint (GET, requires Bearer token)
+curl -X GET http://127.0.0.1:5000/api/task1 \
+  -H "Authorization: Bearer <JWT_TOKEN>"
+
+# 6. Task 2: Save task ID to tasks table (POST, requires Bearer token)
+curl -X POST http://127.0.0.1:5000/api/task2 \
+  -H "Authorization: Bearer <JWT_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"task_id": "<TASK_ID_FROM_TASK1>"}'
+
+# 7. Task 3: Update task record by task_record_id (PUT, requires Bearer token)
+curl -X PUT http://127.0.0.1:5000/api/task3/<TASK_RECORD_ID_FROM_TASK2> \
+  -H "Authorization: Bearer <JWT_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"data": "Updated task data"}'
+
+# 8. Task 4: Delete task record by action_id (DELETE, requires Bearer token)
+curl -X DELETE http://127.0.0.1:5000/api/task4 \
+  -H "Authorization: Bearer <JWT_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"action_id": "<ACTION_ID_FROM_TASK3>"}'
+
+# 9. Error example (GET unknown endpoint)
+curl -X GET http://127.0.0.1:5000/unknown
+
+# Replace <API_KEY_FROM_ADMIN_ENDPOINT>, <JWT_TOKEN>, <TASK_ID_FROM_TASK1>, <TASK_RECORD_ID_FROM_TASK2>, <ACTION_ID_FROM_TASK3> with actual values from previous responses.
