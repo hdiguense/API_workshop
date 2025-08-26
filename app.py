@@ -159,7 +159,12 @@ def token_required(f):
             if not token_obj:
                 log_audit(user_email=current_user_email, action='Invalid Token', endpoint=request.endpoint, method=request.method, status=401)
                 return {'status': 401, 'message': 'Token is invalid', 'error_code': 'TOKEN_INVALID'}, 401
-            if token_obj.expires_at < datetime.now(timezone.utc):
+            expires_at = token_obj.expires_at
+
+            if expires_at.tzinfo is None:
+                expires_at = expires_at.replace(tzinfo=timezone.utc)
+
+            if  expires_at < datetime.now(timezone.utc):
                 token_obj.is_active = False
                 db.session.commit()
                 log_audit(user_email=current_user_email, action='Token Expired', endpoint=request.endpoint, method=request.method, status=401)
